@@ -1,0 +1,14 @@
+node {
+    en: "value",
+    de: "value",
+    tr: "asd"
+}
+node_1 {
+    en: "value1",
+    de: "value",
+    fr: "has"
+}
+node_2 {
+    en: "value2",
+    de: "value"
+}
