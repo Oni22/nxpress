@@ -13,7 +13,7 @@ class NxpressNode {
     var mapString = "{";
 
     for (var node in nxpressKeyValue ?? <NxpressKeyValue>[]) {
-      mapString += "\"${node.key}\":\"${node.value}\",";
+      mapString += "\"${node.key?.trim()}\":\"${node.value?.trim()}\",";
     }
 
     mapString += "}";

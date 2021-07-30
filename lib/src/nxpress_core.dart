@@ -5,9 +5,11 @@ import 'package:nxpress/src/models/nxpress_schema.dart';
 class NxpressCore {
   List<NxpressNode> nodes = [];
   NxpressSchema? nxSchema;
+  String? resourceName;
 
-  NxpressCore.parse(String nxContent, NxpressSchema nxSchema) {
+  NxpressCore.parse(String nxContent, NxpressSchema nxSchema, String resourceName) {
     this.nxSchema = nxSchema;
+    this.resourceName = resourceName;
 
     // split nodes from outside brackets and remove empty ones
     final rawNodes = nxContent.trim().split((RegExp(r"(})(?![^{]*\})")));
@@ -47,8 +49,7 @@ class NxpressCore {
 
       var nxKeyValues = nodeKeyValues.map((kv) {
         final splittedkeyValue = kv.split(":");
-        final key =
-            splittedkeyValue[0].trim().replaceAll(new RegExp(r"\s+"), "");
+        final key = splittedkeyValue[0].trim().replaceAll(new RegExp(r"\s+"), "");
         final value = splittedkeyValue[1].replaceAll('"', "");
         return NxpressKeyValue(key: key, value: value);
       }).toList();
@@ -62,11 +63,11 @@ class NxpressCore {
   }
 
   String toDart() {
-    var code = "import \"package:nxpress/nxpress.dart\";\n";
-    code += "\nclass ${nxSchema?.schemaName} {";
+    var code = "\nclass ${nxSchema?.className} {";
 
     for (var node in nodes) {
-      code += "\t\nstatic const ${node.nodeName} = NxpressResource(keys: ${node.toMapString()});";
+      code += "\t\nstatic final ${node.nodeName?.trim()} = $resourceName(${node.toMapString().trim()});";
+      print(code);
     }
 
     code += "\n}";

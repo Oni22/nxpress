@@ -17,13 +17,13 @@ class NxpressBuilder implements Builder {
     var contents = await buildStep.readAsString(inputId);
     
     var schema = new NxpressSchema(
-      schemaName: "RString",
+      className: "RString",
       requiredKeys: ["de","en"],
       optionalKeys: ["fr","tr"]
     ); 
 
-    var nxparser = new NxpressCore.parse(contents, schema);
+    // var nxparser = new NxpressCore.parse(contents, schema);
 
-    await buildStep.writeAsString(copyInputId, nxparser.toDart());
+    await buildStep.writeAsString(copyInputId, "");
   }
 }

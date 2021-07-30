@@ -1,38 +1,35 @@
-targets:
-  nxpress:
-    builders:
-      nxpress:nxpressBuilder:
-        generate_for: 
-         - lib/src/nxres/**
-        enabled: True
-
-builders:
-  nxpressBuilder:
-    import: package:nxpress/src/nxpress_generators.dart
-    builder_factories: ['nxpressBuilder']
-    build_extensions:
-      .nx:
-        - .nx.dart
-    build_to: source
-    auto_apply: root_package
-
-
 # targets:
 #   nxpress:
 #     builders:
 #       nxpress:nxpressBuilder:
 #         generate_for: 
-#          - lib/src/nxres/*
+#          - lib/src/nxres/**
 #         enabled: True
 
 # builders:
 #   nxpressBuilder:
 #     import: package:nxpress/src/nxpress_generators.dart
-#     builder_factories: ['nxpressGenerator']
-#     build_extensions: { ".dart": [".nx.dart"] }
-#     # build_extensions:
-#     #   .nx:
-#     #     - .nx.dart
+#     builder_factories: ['nxpressBuilder']
+#     build_extensions:
+#       .nx:
+#         - .nx.dart
 #     build_to: source
 #     auto_apply: root_package
-#     applies_builders: ["source_gen|combining_builders"]
+
+
+targets:
+  nxpress:
+    builders:
+      nxpress:nxpressBuilder:
+        generate_for: 
+         - lib/src/nxres/*
+        enabled: True
+
+builders:
+  nxpressBuilder:
+    import: package:nxpress/src/nxpress_generators.dart
+    builder_factories: ['nxpressGenerator']
+    build_extensions: { ".dart": [".nx.g.part"] }
+    build_to: source
+    auto_apply: dependents
+    applies_builders: ["source_gen|combining_builder"]
