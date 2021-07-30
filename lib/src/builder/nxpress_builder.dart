@@ -17,7 +17,6 @@ class NxpressBuilder implements Builder {
     var contents = await buildStep.readAsString(inputId);
     
     var schema = new NxpressSchema(
-      className: "RString",
       requiredKeys: ["de","en"],
       optionalKeys: ["fr","tr"]
     ); 

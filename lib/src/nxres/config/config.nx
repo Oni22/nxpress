@@ -1,0 +1,15 @@
+
+config {
+    backupLang: "en",
+    defaultLang: "en"
+}
+
+
+
+
+
+
+myNode {
+    backupLang: "en",
+    defaultLang: "en"
+}

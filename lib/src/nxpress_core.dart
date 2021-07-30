@@ -6,10 +6,12 @@ class NxpressCore {
   List<NxpressNode> nodes = [];
   NxpressSchema? nxSchema;
   String? resourceName;
+  String? className;
 
-  NxpressCore.parse(String nxContent, NxpressSchema nxSchema, String resourceName) {
+  NxpressCore.parse(String nxContent, NxpressSchema nxSchema, String resourceName, String className) {
     this.nxSchema = nxSchema;
     this.resourceName = resourceName;
+    this.className = className;
 
     // split nodes from outside brackets and remove empty ones
     final rawNodes = nxContent.trim().split((RegExp(r"(})(?![^{]*\})")));
@@ -41,13 +43,19 @@ class NxpressCore {
       usedNodeNames.add(nodeName);
 
       final nxNode = NxpressNode(nodeName: nodeName);
-      final nodeKeyValues = splittedNode[1].split(",");
+      final nodeKeyValues = splittedNode[1].split(RegExp(r"(,)(?![^[]*\])"));
 
       var nxKeyValues = nodeKeyValues.map((kv) {
         final splittedkeyValue = kv.split(":");
         final key = splittedkeyValue[0].trim().replaceAll(new RegExp(r"\s+"), "");
-        final value = splittedkeyValue[1].replaceAll('"', "");
-        return NxpressKeyValue(key: key, value: value);
+        final value = splittedkeyValue[1].trim().replaceAll('"', "");
+ 
+        if (isArrayType(value)) {
+          final values = value.replaceAll("[", "").replaceAll("]", "").replaceAll("\n","").trim().split(",");
+          return NxpressKeyValue(key: key, values: values);
+        } else {
+          return NxpressKeyValue(key: key, value: value);
+        }
       }).toList();
 
       nxNode.nxpressKeyValue = nxKeyValues;
@@ -58,8 +66,12 @@ class NxpressCore {
     return nxNodes;
   }
 
+  isArrayType(String value) {
+    return value.trim().startsWith("[") && value.trim().endsWith("]");
+  }
+
   String toDart() {
-    var code = "\nclass ${nxSchema?.className} {";
+    var code = "\nclass $className {";
 
     for (var node in nodes) {
       code += "\t\nstatic final ${node.nodeName?.trim()} = $resourceName(${node.toMapString().trim()});";

@@ -4,16 +4,23 @@ import 'package:nxpress/src/models/nxpress_node.dart';
 class NxpressSchema {
   final List<String>? requiredKeys;
   final List<String>? optionalKeys;
-  final String? className;
+  final List<String>? requiredNodes;
   final Function(List<NxpressNode> nodes)? validator;
 
-  const NxpressSchema({this.requiredKeys, this.optionalKeys, this.className, this.validator});
+  const NxpressSchema({this.requiredKeys, this.optionalKeys, this.validator, this.requiredNodes});
 
   bool validateNodes(List<NxpressNode> nodes) {
-    
     validator?.call(nodes);
 
+    final missingRequiredNodes = requiredNodes?.where((requiredNode) => nodes.any((node) => node.nodeName?.trim() == requiredNode.trim()) == false);
+    
+    if ((missingRequiredNodes?.length ?? 0) > 0) {
+      throw FormatException("Required nodes are missing: ${missingRequiredNodes?.map((key) => key).toList()}!");
+    }
+
     for (var node in nodes) {
+      if ((node.nxpressKeyValue?.length ?? 0) < 1) throw FormatException("Please add at least one key to ${node.nodeName}!");
+
       for (var kv in node.nxpressKeyValue ?? <NxpressKeyValue>[]) {
         if (requiredKeys?.contains(kv.key) == false && optionalKeys?.contains(kv.key) == false) {
           throw FormatException("Key ${kv.key} is not defined in schema at ${node.nodeName}!");

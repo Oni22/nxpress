@@ -1,14 +1,14 @@
-node_33 {
+node_2222 {
     en: "value",
     de: "value",
-    tr: "asd"
+    tr: ["1","2","3"]
 }
-node_1 {
+node_222222 {
     en: "value1",
     de: "value",
     fr: "has"
 }
-node_2 {
+node_222222222 {
     en: "value2",
     de: "value"
 }

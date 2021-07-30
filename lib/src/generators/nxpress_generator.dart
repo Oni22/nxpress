@@ -19,18 +19,24 @@ class NxpressGenerator extends GeneratorForAnnotation<NxpressClass> {
     var visitor = NxpressVisitor();
     element.visitChildren(visitor);
 
-    var resourceName = element.name ?? "UnknownResource";
+    if (element.name == null) 
+      throw Exception("Class name must be definded!");
+
+    var resourceName = element.name ?? "";
 
     var source = annotation.read("source").stringValue;
+    var className = annotation.read("generateClass").stringValue;
     var schema = annotation.peek("schema");
 
-    var className = schema?.peek("className")?.stringValue ?? "";
-    var requiredKeys = schema?.peek("requiredKeys")?.listValue.map((e) => e.toStringValue()?.trim() ?? "").toList();
-    print(requiredKeys);
-    var optionalKeys = schema?.peek("optionalKeys")?.listValue.map((e) => e.toStringValue()?.trim() ?? "").toList();
+    if(schema == null) 
+      throw Exception("Please Provide a schema!"); 
 
-    var nxSchema = NxpressSchema(requiredKeys: requiredKeys, optionalKeys: optionalKeys ?? [], className: className);
-
+    var requiredNodes = schema.peek("requiredNodes")?.listValue.map((e) => e.toStringValue()?.trim() ?? "").toList();
+    var requiredKeys = schema.peek("requiredKeys")?.listValue.map((e) => e.toStringValue()?.trim() ?? "").toList();
+    var optionalKeys = schema.peek("optionalKeys")?.listValue.map((e) => e.toStringValue()?.trim() ?? "").toList();
+  
+    var nxSchema = NxpressSchema(requiredKeys: requiredKeys ?? [], optionalKeys: optionalKeys ?? [],requiredNodes: requiredNodes ?? []);
+ 
     var relativePath = path.relative("lib/src/nxres/$source");
     var dir = Directory(relativePath);
     var files = dir.listSync();
@@ -42,14 +48,7 @@ class NxpressGenerator extends GeneratorForAnnotation<NxpressClass> {
       contents += await file.readAsString();
     }
 
-    print(contents);
-
-    // if(!dir.existsSync()) {
-    //   dir.createSync();
-    //   return;
-    // }
-
-    var nxparser = NxpressCore.parse(contents, nxSchema, resourceName);
+    var nxparser = NxpressCore.parse(contents, nxSchema, resourceName, className);
 
     return nxparser.toDart();
   }

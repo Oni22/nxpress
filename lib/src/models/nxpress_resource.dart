@@ -1,5 +1,5 @@
 class NxpressResource {
-  final Map<String, String>? keys;
+  final Map<String, Object>? keys;
 
   const NxpressResource({this.keys});
 

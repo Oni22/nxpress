@@ -22,7 +22,7 @@ targets:
     builders:
       nxpress:nxpressBuilder:
         generate_for: 
-         - lib/src/nxres/*
+         - lib/src/nxclasses/**
         enabled: True
 
 builders:
