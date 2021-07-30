@@ -3,7 +3,21 @@
 // **************************************************************************
 
 class Test {
-  static final node = RStrings({
+  static final node_2222 = RStrings({
+    "en": "value",
+    "de": "value",
+    "tr": "asd",
+  });
+  static final node_222222 = RStrings({
+    "en": "value1",
+    "de": "value",
+    "fr": "has",
+  });
+  static final node_222222222 = RStrings({
+    "en": "value2",
+    "de": "value",
+  });
+  static final node_33 = RStrings({
     "en": "value",
     "de": "value",
     "tr": "asd",

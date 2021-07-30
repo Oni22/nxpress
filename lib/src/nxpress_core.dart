@@ -19,11 +19,7 @@ class NxpressCore {
     final nxNodes = _createNodes(rawNodes);
 
     // validate the schema
-    final nxError = nxSchema.validateNodes(nxNodes);
-
-    if (nxError.isError ?? false) {
-      nxError.throwError();
-    }
+    nxSchema.validateNodes(nxNodes);
 
     print("Content parsed successfully");
 

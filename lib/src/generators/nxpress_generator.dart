@@ -42,6 +42,8 @@ class NxpressGenerator extends GeneratorForAnnotation<NxpressClass> {
       contents += await file.readAsString();
     }
 
+    print(contents);
+
     // if(!dir.existsSync()) {
     //   dir.createSync();
     //   return;
@@ -50,7 +52,6 @@ class NxpressGenerator extends GeneratorForAnnotation<NxpressClass> {
     var nxparser = NxpressCore.parse(contents, nxSchema, resourceName);
 
     return nxparser.toDart();
-    return "";
   }
 }
 

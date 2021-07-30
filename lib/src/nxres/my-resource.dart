@@ -5,14 +5,13 @@ import 'package:nxpress/src/models/nxpress_schema.dart';
 part 'my-resource.g.dart';
 
 @NxpressClass(
-  source: "home_view", 
+  source: "strings", 
   schema: NxpressSchema(
-    className: "Test",
-    requiredKeys: ["en","de"],
-    optionalKeys: ["tr","fr"]
+    className: "Test", 
+    requiredKeys: ["en", "de"], 
+    optionalKeys: ["tr", "fr"], 
   )
 )
 class RStrings extends NxpressResource {
   RStrings(Map<String, String> keys) : super(keys: keys);
-
 }

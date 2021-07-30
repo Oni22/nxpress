@@ -2,10 +2,21 @@ class NxpressResource {
   final Map<String, String>? keys;
 
   const NxpressResource({this.keys});
+
+  getValue<T>(String key) {
+    return keys?.keys.firstWhere((k) => k == key) as T;
+  }
+
+  getIntValue(String key) {
+    return int.parse(getValue(key));
+  }
+
+  getDoubleValue(String key) {
+    return double.parse(getValue(key));
+  }
+
+  getBoolValue(String key) {
+    return getValue(key) == "true";
+  }
+
 }
-
-// class TestR extends NxpressResource {
-//   TestR(Map<String, String>? keys) : super(keys: keys);
-// }
-
-// var a = TestR({});
