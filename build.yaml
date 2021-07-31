@@ -29,7 +29,7 @@ builders:
   nxpressBuilder:
     import: package:nxpress/src/nxpress_generators.dart
     builder_factories: ['nxpressGenerator']
-    build_extensions: { ".dart": [".nx.g.part"] }
-    build_to: source
+    build_extensions: { ".dart": [".nx.part"] }
+    build_to: cache
     auto_apply: dependents
     applies_builders: ["source_gen|combining_builder"]

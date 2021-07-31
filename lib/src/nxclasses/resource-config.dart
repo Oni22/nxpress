@@ -2,15 +2,14 @@ import 'package:nxpress/nxpress.dart';
 
 part 'resource-config.g.dart';
 
-@NxpressClass(
+@NxpressWrapper(
   generateClass: "RConfig", 
   source: "config", 
   schema: NxpressSchema(
     requiredKeys: ["backupLang", "defaultLang"], 
-    optionalKeys: [],
-    requiredNodes: ["myNode"]
-  ) 
-)
+    optionalKeys: [], 
+    requiredNodes: ["myNode"], 
+    onlyRequiredNodes: true))
 class ResourceConfig extends NxpressResource {
   ResourceConfig(Map<String, Object> keys) : super(keys: keys);
 }

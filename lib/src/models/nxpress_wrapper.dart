@@ -2,7 +2,7 @@ import 'package:meta/meta_meta.dart';
 import 'package:nxpress/src/models/nxpress_schema.dart';
 
 @Target({TargetKind.classType})
-class NxpressClass {
+class NxpressWrapper {
   /// [source] defines the directory under the nxres folder. Nxpress will load the nx files
   /// for this resource from the given directory.
   final String? source;
@@ -19,5 +19,5 @@ class NxpressClass {
   /// [schema] defines custom rules for your nx files
   final NxpressSchema? schema;
 
-  const NxpressClass({this.source, this.generateClass, this.schema});
+  const NxpressWrapper({this.source, this.generateClass, this.schema});
 }

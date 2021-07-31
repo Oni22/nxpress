@@ -5,17 +5,26 @@ class NxpressSchema {
   final List<String>? requiredKeys;
   final List<String>? optionalKeys;
   final List<String>? requiredNodes;
+  final bool onlyRequiredNodes;
   final Function(List<NxpressNode> nodes)? validator;
 
-  const NxpressSchema({this.requiredKeys, this.optionalKeys, this.validator, this.requiredNodes});
+  const NxpressSchema({this.requiredKeys, this.optionalKeys, this.validator, this.requiredNodes, this.onlyRequiredNodes = false});
 
   bool validateNodes(List<NxpressNode> nodes) {
     validator?.call(nodes);
 
-    final missingRequiredNodes = requiredNodes?.where((requiredNode) => nodes.any((node) => node.nodeName?.trim() == requiredNode.trim()) == false);
-    
-    if ((missingRequiredNodes?.length ?? 0) > 0) {
-      throw FormatException("Required nodes are missing: ${missingRequiredNodes?.map((key) => key).toList()}!");
+    if (onlyRequiredNodes) {
+      if (nodes.any((node) => requiredNodes?.any((requiredNode) => requiredNode == node.nodeName?.trim()) == false)) {
+        throw FormatException("Only required nodes are allowed");
+      }
+    }
+
+    if ((requiredNodes?.length ?? 0) > 0) {
+      final missingRequiredNodes = requiredNodes?.where((requiredNode) => nodes.any((node) => node.nodeName?.trim() == requiredNode.trim()) == false);
+
+      if ((missingRequiredNodes?.length ?? 0) > 0) {
+        throw FormatException("Required nodes are missing: ${missingRequiredNodes?.map((key) => key).toList()}!");
+      }
     }
 
     for (var node in nodes) {
