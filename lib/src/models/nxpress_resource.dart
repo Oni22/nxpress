@@ -32,9 +32,9 @@ class NxpressResource {
   }
 
   String setPlaceholders(String content, Map<String, Object> placeholders) {
-    var finalContent = "";
+    var finalContent = content;
     placeholders.forEach((name, value) {
-      finalContent = content.replaceFirst("{{$name}}", value.toString());
+      finalContent = finalContent.replaceFirst("{{$name}}", value.toString());
     });
     return finalContent;
   }
