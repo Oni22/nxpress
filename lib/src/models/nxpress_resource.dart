@@ -23,7 +23,19 @@ class NxpressResource {
     return getValue(key).toString();
   }
 
-  String setPlaceholder(String content, String name, String value) {
-    return content.replaceFirst("{{$name}}", value);
+  List<String> getListValue(String key) {
+    try {
+      return getValue<List<String>>(key);
+    } catch (err) {
+      throw Exception("$key is not a type of List<String>. Please be sure that you use a List for plurals.");
+    }
+  }
+
+  String setPlaceholders(String content, Map<String, Object> placeholders) {
+    var finalContent = "";
+    placeholders.forEach((name, value) {
+      finalContent = content.replaceFirst("{{$name}}", value.toString());
+    });
+    return finalContent;
   }
 }

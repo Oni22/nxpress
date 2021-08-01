@@ -8,11 +8,15 @@ class NxString extends NxpressResource {
     var content = getStringValue(NxConfig.lang);
 
     if (placeholders != null) {
-      placeholders.forEach((name, value) {
-        content = setPlaceholder(content, name, value.toString());
-      });
+      return setPlaceholders(content, placeholders);
     }
 
+    return content;
+  }
+
+  String plural(int quantity, {Map<String, Object>? placeholders}) {
+    var content = getListValue(NxConfig.lang)[quantity];
+    if (placeholders != null) return setPlaceholders(content, placeholders);
     return content;
   }
 }
