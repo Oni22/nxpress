@@ -34,7 +34,7 @@ class NxpressCore {
 
     for (final node in rawNodes) {
       final splittedNode = node.split("{");
-      final nodeName = splittedNode[0];
+      final nodeName = splittedNode[0].trim();
 
       if (usedNodeNames.contains(nodeName)) {
         throw FormatException("Duplicated node name: $nodeName");
@@ -49,9 +49,9 @@ class NxpressCore {
         final splittedkeyValue = kv.split(":");
         final key = splittedkeyValue[0].trim().replaceAll(new RegExp(r"\s+"), "");
         final value = splittedkeyValue[1].trim().replaceAll('"', "");
- 
+
         if (isArrayType(value)) {
-          final values = value.replaceAll("[", "").replaceAll("]", "").replaceAll("\n","").trim().split(",");
+          final values = value.replaceAll("[", "").replaceAll("]", "").replaceAll("\n", "").trim().split(",");
           return NxpressKeyValue(key: key, values: values);
         } else {
           return NxpressKeyValue(key: key, value: value);
@@ -71,7 +71,7 @@ class NxpressCore {
   }
 
   String toDart() {
-    var code = "\nclass $className {";
+    var code = "import 'package:nxpress/nxpress.dart';\nclass $className {";
 
     for (var node in nodes) {
       code += "\t\nstatic final ${node.nodeName?.trim()} = $resourceName(${node.toMapString().trim()});";

@@ -7,16 +7,23 @@ class NxpressResource {
     return keys?.keys.firstWhere((k) => k == key) as T;
   }
 
-  getIntValue(String key) {
+  int getIntValue(String key) {
     return int.parse(getValue(key));
   }
 
-  getDoubleValue(String key) {
+  double getDoubleValue(String key) {
     return double.parse(getValue(key));
   }
 
-  getBoolValue(String key) {
+  bool getBoolValue(String key) {
     return getValue(key) == "true";
   }
 
+  String getStringValue(String key) {
+    return getValue(key).toString();
+  }
+
+  String setPlaceholder(String content, String name, String value) {
+    return content.replaceFirst("{{$name}}", value);
+  }
 }

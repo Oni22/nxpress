@@ -8,7 +8,7 @@ part of 'resource-config.dart';
 
 class RConfig {
   static final myNode = ResourceConfig({
-    "backupLang": "en",
+    "backupLang": "dasdasds",
     "defaultLang": "en",
   });
 }

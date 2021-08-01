@@ -1,14 +1,8 @@
-node_2222 {
-    en: "value2",
-    de: "value",
-    tr: ["1","2","3"]
+node {
+    en: "hallo",
+    de: "test"
 }
-node_222222 {
-    en: "value1",
-    de: "value",
-    fr: "has"
-}
-node_222222222 {
-    en: "value2",
-    de: "value"
+node2 {
+    en: "hallo",
+    de: "test"
 }
