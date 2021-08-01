@@ -4,7 +4,7 @@ class NxpressResource {
   const NxpressResource({this.keys});
 
   getValue<T>(String key) {
-    return keys?.keys.firstWhere((k) => k == key) as T;
+    return (keys ?? {})[key] as T;
   }
 
   int getIntValue(String key) {
