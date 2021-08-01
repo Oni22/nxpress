@@ -1,8 +1,0 @@
-node {
-    en: "hallo",
-    de: "test"
-}
-node2 {
-    en: "hallo",
-    de: "test"
-}
