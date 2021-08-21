@@ -14,7 +14,7 @@ class NxpressCreator {
   Future<void> build() async {
     var relativePath = path.relative("lib/src/nxres/$namespace");
 
-    final fileEntities = Directory(relativePath).listSync();
+    final fileEntities = Directory(relativePath).listSync(recursive: true);
     fileEntities.removeWhere((element) => path.extension(element.path) != ".nx");
     var contents = "";
 
