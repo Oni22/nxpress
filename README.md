@@ -101,18 +101,18 @@ After generating you can use your strings as follows:
 
 ```dart
 // get the text
-RString.hello_world.text()
+NxString.hello_world.text()
 
 // get text with placeholders
-RString.hello_world.text(placeholders: {
+NxString.hello_world.text(placeholders: {
     "name": "Pink Lady"
 })
 
 // get plural 
-RString.hello_world.plural(0)
+NxString.hello_world.plural(0)
 
 // get plural with placeholders
-RString.hello_world.plural(0,placeholders: {
+NxString.hello_world.plural(0,placeholders: {
     "name": "Pink Lady"
 })
 
