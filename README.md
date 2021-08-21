@@ -4,13 +4,13 @@ Manage your string resources decoupled from your code
 
 ## Getting Started
 
-Create your environment and namespaces:
+Create your environment:
 
 ```
 flutter pub run nxpress:init
 ```
 
-this command creates the ***nxres*** folder with the namespace folder ***strings***. Inside the ***strings*** folder we will place our ***.nx*** files later.
+this command creates the ***nxres*** folder with the ***resources*** and ***custom*** folders within it and other needed files.
 
 ## Nxpress notation basics
 
@@ -29,7 +29,7 @@ node_2 {
 
 ```
 
-**TIPP:** Best practice for Nxpress is to create one source for each view. Let's say we have the view home.dart and we want to create a string resource for this view. Then we will create a ***home.nx*** file under ***strings*** folder.
+**TIPP:** Best practice for Nxpress is to create one source for each target. Let's say we have the view home.dart and we want to create a string resources for this view. Then we will create a ***home.nx*** file under ***strings*** folder.
 
 ## Creating your first string resource
 
@@ -122,33 +122,24 @@ RString.hello_world.plural(0,placeholders: {
 
 You can create custom Nxpress Schemas for your needs.
 
-1. Create a ***bin*** folder under the root folder of your project. 
-
-2. Add a new dart file named ***mynamespace.dart*** with the code:
-
-```dart
-
-import 'package:nxpress/nxpress.dart';
-
-main(List<String> args) async {
-
-  final creator = NxpressCreator(
-    namespace: "mynamespace", 
-    schema: NxpressSchema(
-        requiredKeys: ["key1","key2"]
-        optionalKeys: ["key3","key4"]
-        ), 
-    resourceName: "MyCustomResource"
-  );
-
-  creator.build();
-}
-
+1. Create a schema under the ***nxres/custom/schemas.json***:
+```json
+    [
+        {
+            "resourceName": "MyResource",
+            "customScript": "my_resource.dart",
+            "requiredKeys": ["1","2"],
+            "optionalKeys": [],
+            "namespace": "mynamespace"
+        }
+    ]
 ```
 
-3. Create the resource ***MyCustomResource***
+2. Add your custom script under ***nxres/custom/*** and named it like you named it in the schema at the customScript key:
 
 ```dart
+
+//nxres/custom/my_resource.dart
 
 import 'package:nxpress/nxpress.dart';
 
@@ -163,8 +154,11 @@ class MyCustomResource extends NxpressResource {
 
 ```
 
-4. Add your nx resources under ***nxres/mynamespace/*** and run:
+3. Create ***myresources*** folder under ***nxres/resources/*** and add your nx resources
+
+4. Run the build command:
 
 ```
-flutter pub run nxpress:mynamespace
+flutter pub run nxpress:build
+
 ```
