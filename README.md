@@ -49,11 +49,11 @@ welcome {
 
 ```
 
-The string namepsace follows a strict schema which is predefined. This is one of the benefits of Nxpress. You can define Nxpress schemas with required keys and optional keys. The predefined schema for the string namespace follows the ISO-3691-1 standart for country codes. If you add keys which are not inside the defined schema Nxpress will throw an error.  
+The string namepsace follows a strict schema which is predefined. This is one of the benefits of Nxpress. You can define Nxpress schemas with required keys and optional keys. The predefined schema for the string resources follows the ISO-3691-1 standart for country codes. If you add keys which are not inside the defined schema Nxpress will throw an error.  
 
 ## Plurals and placeholder
 
-The string namespace also allows placeholders and plurals:
+The string resources also allows placeholders and plurals:
 
 ```
 plural {
@@ -90,10 +90,10 @@ plural {
 After you setup your string resources you can generate them via the command:
 
 ```
-flutter pug run nxpress:str
+flutter pug run nxpress:build
 ```
 
-This command merges all your nx files of your string namespace to a single dart file named ***nxstrings.dart***.
+This command merges all your nx files of your string resources to a single dart file named ***nxstrings.dart***.
 
 # Using in Code
 
@@ -130,7 +130,7 @@ You can create custom Nxpress Schemas for your needs.
             "customScript": "my_resource.dart",
             "requiredKeys": ["1","2"],
             "optionalKeys": [],
-            "namespace": "mynamespace"
+            "namespace": "myresources"
         }
     ]
 ```
@@ -154,7 +154,7 @@ class MyCustomResource extends NxpressResource {
 
 ```
 
-3. Create ***myresources*** folder under ***nxres/resources/*** and add your nx resources
+3. Create ***myresources*** folder under ***nxres/resources/*** and add your nx resources. The folder name must match the namespace key of the schema defined in the ***schemas.json***.
 
 4. Run the build command:
 
