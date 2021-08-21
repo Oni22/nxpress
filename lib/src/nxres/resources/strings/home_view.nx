@@ -4,5 +4,5 @@ node {
 }
 node2 {
     en: "hallo",
-    de: "test"
+    de: "["1","2","3"]"
 }

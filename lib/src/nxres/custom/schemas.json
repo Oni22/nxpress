@@ -1,0 +1,9 @@
+[
+    {
+        "resourceName": "MyResource",
+        "customScript": "my_resource.dart",
+        "requiredKeys": ["1","2"],
+        "optionalKeys": [],
+        "namespace": "mynamespace"
+    }
+]

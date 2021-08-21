@@ -6,7 +6,12 @@ import 'package:path/path.dart' as path;
 main(List<String> args) async{
 
   var relativePath = path.relative("lib/src");
-  var nxResDir = Directory(relativePath + "/nxres/strings");
+  var nxResNamespacesDir = Directory(relativePath + "/nxres/resources");
+  var nxResCustomDir = Directory(relativePath + "/nxres/custom");
+  nxResNamespacesDir.createSync(recursive: true);
+  nxResCustomDir.createSync(recursive: true);
+  File(relativePath + "/nxres/custom/schemas.json").writeAsString("[]");
+  var nxResDir = Directory(relativePath + "/nxres/resources/strings");
   nxResDir.createSync(recursive: true);
 
 }

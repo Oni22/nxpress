@@ -70,8 +70,9 @@ class NxpressCore {
     return value.trim().startsWith("[") && value.trim().endsWith("]");
   }
 
-  String toDart() {
-    var code = "import 'package:nxpress/nxpress.dart';\nclass $className {";
+  String toDart({String customScript = ""}) {
+    var injectScript = customScript != "" ? "\nimport '/src/nxres/custom/$customScript';" : "import 'package:nxpress/nxpress.dart';";
+    var code = "$injectScript\nclass $className {";
 
     for (var node in nodes) {
       code += "\t\nstatic final ${node.nodeName?.trim()} = $resourceName(${node.toMapString().trim()});";

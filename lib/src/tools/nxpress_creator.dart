@@ -8,11 +8,12 @@ class NxpressCreator {
   final String namespace;
   final NxpressSchema schema;
   final String resourceName;
+  String customScript = "";
 
-  NxpressCreator({required this.namespace, required this.schema, required this.resourceName});
+  NxpressCreator({required this.namespace, required this.schema, required this.resourceName,this.customScript = ""});
 
   Future<void> build() async {
-    var relativePath = path.relative("lib/src/nxres/$namespace");
+    var relativePath = path.relative("lib/src/nxres/resources/$namespace");
 
     final fileEntities = Directory(relativePath).listSync(recursive: true);
     fileEntities.removeWhere((element) => path.extension(element.path) != ".nx");
@@ -26,6 +27,6 @@ class NxpressCreator {
     final wrapperClassName = resourceName + "s";
     final nxParser = NxpressCore.parse(contents, schema, resourceName, wrapperClassName);
 
-    await File(relativePath + "/${wrapperClassName.toLowerCase()}.dart").writeAsString(nxParser.toDart());
+    await File(relativePath + "/${wrapperClassName.toLowerCase()}.dart").writeAsString(nxParser.toDart(customScript: customScript));
   }
 }
