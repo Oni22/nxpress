@@ -8,12 +8,9 @@ class NxpressCore {
   NxpressCore.parse(String nxContent, NxpressSchema nxSchema) {
 
     // split nodes from outside brackets and remove empty ones
-    // TODO CHECK IF } are inside a node 
-    final rawNodes = nxContent.trim().split((RegExp(r'(})(?![^[]*\])(?![^"\n]*\")(?![^{]*\})')));
-
+    final rawNodes = nxContent.trim().split(RegExp(r'(,)(?![^[]*\])(?![^"\n]*\")(?![^{]*\})'));
+    print(rawNodes);
     rawNodes.removeWhere((node) => node.length == 0);
-
-    // create nx nodes
     final nxNodes = _createNodes(rawNodes);
 
     // validate the schema
@@ -24,30 +21,56 @@ class NxpressCore {
     nodes = nxNodes;
   }
 
+  // TODO validate key values format with commas
+  // validate arrays syntax
+  NxNodeData validateNodeSyntax(String rawNode) {
+
+    final node = rawNode.trim();
+    if(node.contains("[TT_OPAREN]") || node.contains("[TT_CPAREN]")) {
+      throw FormatException("Nxpress ERROR: [TT_OPAREN] and [TT_CPAREN] are not allowed! These keys are reserved by Nxpress parser.");
+    }
+    
+    var tokenNode = node.replaceFirst("{","[TT_OPAREN]").trim();
+  
+    final nodeName = tokenNode.split("[TT_OPAREN]")[0].trim();
+    final hasNodeNameSpecialChars = nodeName.contains(RegExp(r'[^A-Za-z0-9_]'));
+    if(hasNodeNameSpecialChars) throw FormatException("Nxpress ERROR: Only underscores are allowed in node names. At -> $nodeName"); 
+
+    if(!tokenNode.endsWith("}")) throw FormatException("Nxpress ERROR: No closing brace! At -> $nodeName"); 
+
+    tokenNode = tokenNode.substring(0,tokenNode.length - 1) + "[TT_CPAREN]";
+    var nodeContent = tokenNode.split("[TT_OPAREN]")[1].replaceAll("[TT_CPAREN]","").trim();
+  
+    final regexOpenCurly= RegExp(r"""{(?=([^'"]*['"][^'"]*['"])*[^'"]*$)""");
+    final regexCloseCurly = RegExp(r"""}(?=([^'"]*['"][^'"]*['"])*[^'"]*$)""");
+
+    if (regexOpenCurly.allMatches(nodeContent).length > 0) throw FormatException("Node $nodeName has invalid syntax!");
+    if (regexCloseCurly.allMatches(nodeContent).length > 0) throw FormatException("Node $nodeName has invalid syntax!");
+
+
+    return NxNodeData(nodeName: nodeName,nodeContent: nodeContent);
+
+  }
+
   List<NxpressNode> _createNodes(List<String> rawNodes) {
     List<NxpressNode> nxNodes = [];
     List<String> usedNodeNames = [];
 
     for (final node in rawNodes) {
-      // Check if the curly brackets are correct written
-      final regexOpenCurly = RegExp(r'{(?=([^"]*"[^"]*")*[^"]*$)');
 
-      if (regexOpenCurly.allMatches(node).length > 1) throw FormatException("Node $node has invalid syntax!");
+      final nodeData = validateNodeSyntax(node);
 
-      final splittedNode = node.trim().split(regexOpenCurly);
-      print(splittedNode);
-      final nodeName = splittedNode[0].trim();
-
-      if (usedNodeNames.contains(nodeName)) {
-        throw FormatException("Duplicated node name: $nodeName");
+      if (usedNodeNames.contains(nodeData.nodeName)) {
+        throw FormatException("Duplicated node name: ${nodeData.nodeName}");
       }
 
-      usedNodeNames.add(nodeName);
+      usedNodeNames.add(nodeData.nodeName ?? "unknown");
 
-      final nxNode = NxpressNode(nodeName: nodeName);
-      final nodeKeyValues = splittedNode[1].trim().split(RegExp(r"(,)(?![^[]*\])"));
-
-      var nxKeyValues = nodeKeyValues.map((kv) {
+      final nxNode = NxpressNode(nodeName: nodeData.nodeName);
+      final nodeKeyValues = nodeData.nodeContent?.trim().split(RegExp(r""",(?=([^'"]*['"][^'"]*['"])*[^'"]*$)"""));
+   
+      print(nodeKeyValues);
+      var nxKeyValues = nodeKeyValues?.map((kv) {
         final splittedkeyValue = kv.split(":");
         final key = splittedkeyValue[0].trim();
         final value = splittedkeyValue[1].replaceAll("\"", "");
@@ -85,4 +108,10 @@ class NxpressCore {
 
     return code;
   }
+}
+
+class NxNodeData {
+  String? nodeName;
+  String? nodeContent;
+  NxNodeData({this.nodeContent,this.nodeName});
 }

@@ -1,8 +1,8 @@
 node {
-    en: "hallo",
-    de: "test"
-}
+    en: "hallo, cool",
+    de: "testloloo"
+},
 node2 {
     en: "hallo",
-    de: "["1","2","3"]"
-}
+    de: "["1","3","3"]"
+},
