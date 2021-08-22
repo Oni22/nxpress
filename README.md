@@ -1,6 +1,6 @@
 # nxpress
 
-Manage your string resources decoupled from your code
+Manage your resources decoupled from your code
 
 ## Getting Started
 
@@ -10,21 +10,42 @@ Create your environment:
 flutter pub run nxpress:init
 ```
 
-this command creates the ***nxres*** folder with the ***resources*** and ***custom*** folders within it and other needed files.
+this command creates the following folder structure:
+- nxres/
+    - custom/
+        - schemas.nx
+    - resources/ 
+        - strings/
+
+
 
 ## Nxpress notation basics
 
-Nxpress has it's own notation and file extension. The notations are following specific schemas which are predefined (more in the next sections). The files are ending with the ***.nx*** extension. 
-
-A Nxpress file contains ***nodes*** with ***keys*** and ***values***. Values are always string types. Nxpress can parse them into other types if possible and needed. The only allowed special char in node names is a underscore.
+Nxpress has it's own **notation** and file **extension**. The files are ending with the ***.nx*** prefix. A Nxpress file contains ***nodes*** with ***keys*** and ***values***. Values are always inside double quotes. Arrays are defined with suqare bracktes. Values in arrays are also inside double quotes. The only allowed special char in node names is an underscore. 
 
 ```
 
-node {
+my_node_name {
     key: "text"
 }
-node_2 {
+my_node_name_2 {
     key: "2"
+}
+my_node_name_3 {
+    key: "["ArrayValue","ArrayValue1"]"
+}
+
+```
+One **important** point of Nxpress is that every resource follows a strict Schema. Some Schemas are predefined by this library others can be customized by yourself. One of the predefined resources which comes with this library are string resources. The ***.nx*** files for string resources are placed under **nxres/resources/strings**. The Schema of the string resources follows the ISO-3691-1 country code standard. This means that every node can only take specific key names. In this case all codes from the ISO-3691-1 standard. Otherwise Nxpress will throw an error.
+
+Example:
+
+```
+// nxres/resources/strings/home.nx
+
+hello_message {
+    en: "Hi",
+    de: "Hallo"
 }
 
 ```
@@ -32,6 +53,7 @@ node_2 {
 **TIPP:** Best practice for Nxpress is to create one source for each target. Let's say we have the view home.dart and we want to create a string resources for this view. Then we will create a ***home.nx*** file under ***strings*** folder.
 
 ## Creating your first string resource
+
 
 Create a ***home.nx*** file under ***nxpress/strings*** and add this content to the file:
 
@@ -49,7 +71,11 @@ welcome {
 
 ```
 
-The string namepsace follows a strict schema which is predefined. This is one of the benefits of Nxpress. You can define Nxpress schemas with required keys and optional keys. The predefined schema for the string resources follows the ISO-3691-1 standart for country codes. If you add keys which are not inside the defined schema Nxpress will throw an error.  
+Run:
+```
+flutter pub run nxpress:build
+```
+This command merges all your nx files of your string resources to a single dart file named ***nxstrings.dart***.
 
 ## Plurals and placeholder
 
@@ -63,8 +89,6 @@ plural {
 
 ```
 
-For plurals you can use nxpress arrays. Arrays are inside "" and only contains strings too.
-
 Placeholders are defined with double opening and closing curly braces:
 
 ```
@@ -74,7 +98,7 @@ placeholders {
 }
 
 ```
-inside the barces you have to add an identifier.
+inside the braces you have to add an identifier like name.
 
 you can also use placeholders in plurals:
 
@@ -85,17 +109,7 @@ plural {
 }
 ```
 
-## Generate resources
-
-After you setup your string resources you can generate them via the command:
-
-```
-flutter pug run nxpress:build
-```
-
-This command merges all your nx files of your string resources to a single dart file named ***nxstrings.dart***.
-
-# Using in Code
+## Using string resources in Code
 
 After generating you can use your strings as follows:
 
@@ -118,24 +132,21 @@ NxString.hello_world.plural(0,placeholders: {
 
 ```
 
-# Creating custom Nxpress Schemas
+## Creating custom Nxpress Schemas
 
 You can create custom Nxpress Schemas for your needs.
 
-1. Create a schema under the ***nxres/custom/schemas.json***:
-```json
-    [
-        {
-            "resourceName": "MyResource",
-            "customScript": "my_resource.dart",
-            "requiredKeys": ["1","2"],
-            "optionalKeys": [],
-            "namespace": "myresources"
-        }
-    ]
+1. Go to ***nxres/custom/schemas.nx*** and add your schema:
+```
+    my_resource_name {
+        requiredKeys: "["key1","key2"]",
+        oprionalKeys: "["key3",key4]",
+        customScript: "my_resource.dart",
+        resourceName: "MyResource"
+    }
 ```
 
-2. Add your custom script under ***nxres/custom/*** and named it like you named it in the schema at the customScript key:
+2. Add your custom script under ***nxres/custom/*** and named it like you named it in the schema at the **customScript** key:
 
 ```dart
 
@@ -143,7 +154,7 @@ You can create custom Nxpress Schemas for your needs.
 
 import 'package:nxpress/nxpress.dart';
 
-class MyCustomResource extends NxpressResource {
+class MyResource extends NxpressResource {
 
   // call the super class of NxpressResource  
   NxString(Map<String, Object> keys) : super(keys: keys);
@@ -153,12 +164,15 @@ class MyCustomResource extends NxpressResource {
 }
 
 ```
+**Important** the class name must match the **resourceName** key from your schema. In this case the class name needs to be MyResource.
 
-3. Create ***myresources*** folder under ***nxres/resources/*** and add your nx resources. The folder name must match the namespace key of the schema defined in the ***schemas.json***.
-
-4. Run the build command:
+3. Run the build command:
 
 ```
 flutter pub run nxpress:build
+```
+This will generate your resource folder under the **nxres/resources** directory.  Now you can add your nx resource files in this directory Furthermore you can find a dart file which updates after your generating your resources. From this file you can call your resources in your dart code lately: 
 
+```dart
+MyResources.hello_world.myCustomFunc()
 ```

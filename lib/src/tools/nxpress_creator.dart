@@ -25,8 +25,8 @@ class NxpressCreator {
     }
 
     final wrapperClassName = resourceName + "s";
-    final nxParser = NxpressCore.parse(contents, schema, resourceName, wrapperClassName);
+    final nxParser = NxpressCore.parse(contents, schema);
 
-    await File(relativePath + "/${wrapperClassName.toLowerCase()}.dart").writeAsString(nxParser.toDart(customScript: customScript));
+    await File(relativePath + "/${wrapperClassName.toLowerCase()}.dart").writeAsString(nxParser.toDart(wrapperClassName,resourceName, customScript: customScript));
   }
 }

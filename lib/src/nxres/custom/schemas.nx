@@ -1,0 +1,6 @@
+colors {
+    resourceName: "Color",
+    requiredKeys: "["dark","light"]",
+    optionalKeys: "["myOptionalKey1","myOptionalKey2"]",
+    customScript: "colors.dart"
+}

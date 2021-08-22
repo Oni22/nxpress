@@ -6,7 +6,15 @@ class NxpressNode {
 
   NxpressNode({this.nodeName, this.nxpressKeyValue});
 
-  toMapString() {
+  T getValue<T>(String key) {
+    return nxpressKeyValue?.firstWhere((kv) => kv.key == key).value as T;
+  }
+
+  List<String> getStringList(String key) {
+    return nxpressKeyValue?.firstWhere((kv) => kv.key == key).values ?? [];
+  }
+
+  String toMapString() {
 
     var mapString = "{";
 

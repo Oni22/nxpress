@@ -1,8 +1,7 @@
-
-
-import 'dart:convert';
 import 'package:nxpress/nxpress.dart';
+import 'package:nxpress/src/models/nxpress_node.dart';
 import 'package:nxpress/src/models/nxpress_schema.dart';
+import 'package:nxpress/src/nxpress_core.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
 
@@ -17,20 +16,27 @@ main(List<String> args) async {
   }
 
   var relativePath = path.relative("lib/src/nxres/");
-  final content = await File(relativePath + "/custom/schemas.json").readAsString();
-  final schemas = json.decode(content);
+  final content = await File(relativePath + "/custom/schemas.nx").readAsString();
+
+  final schemaParser = NxpressCore.parse(
+    content,
+    NxpressSchema(
+      requiredKeys: ["requiredKeys","resourceName","customScript"],
+      optionalKeys: ["optionalKeys"]
+    ),
+  );
 
   var relativeNamespacePath = path.relative("lib/src/nxres/resources/");
 
   if(namespace != null) {
 
-    final currentNamespace = schemas.firstWhere((n) => n["namespace"] == namespace);
+    final currentNamespace = schemaParser.nodes.firstWhere((n) => n.nodeName == namespace);
     build(relativeNamespacePath, currentNamespace);
 
   } else {
 
-    for(var schema in schemas) {
-      build(relativeNamespacePath, schema);
+    for(var node in schemaParser.nodes) {
+      build(relativeNamespacePath, node);
     }
 
   }
@@ -47,9 +53,9 @@ buildNxStrings() {
   creator.build();
 }
 
-build(String path,dynamic schema) {
-  createNamespace(path, schema['namespace']);
-  final creator = buildResources(schema);
+build(String path,NxpressNode node) {
+  createNamespace(path, node.nodeName ?? "unknown");
+  final creator = buildResources(node);
   creator.build();
 }
 
@@ -58,14 +64,14 @@ createNamespace(String path,String namespace) {
   nxNamespace.createSync(recursive: true);
 }
 
-buildResources(dynamic namespace) {
+buildResources(NxpressNode node) {
   return NxpressCreator(
-    customScript: namespace["customScript"],
-    namespace: namespace["namespace"], 
+    customScript: node.getValue<String>("customScript"),
+    namespace: node.nodeName ?? "unknown", 
     schema: NxpressSchema(
-      requiredKeys: namespace["requiredKeys"].map<String>((s) => s.toString()).toList(),
-      optionalKeys: namespace["optionalKeys"].map<String>((s) => s.toString()).toList()
+      requiredKeys: node.getStringList("requiredKeys"),
+      optionalKeys: node.getStringList("optionalKeys")
       ), 
-    resourceName: namespace["resourceName"]
+    resourceName: node.getValue<String>("resourceName"),
   );
 }

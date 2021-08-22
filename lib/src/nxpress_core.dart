@@ -4,14 +4,8 @@ import 'package:nxpress/src/models/nxpress_schema.dart';
 
 class NxpressCore {
   List<NxpressNode> nodes = [];
-  NxpressSchema? nxSchema;
-  String? resourceName;
-  String? className;
 
-  NxpressCore.parse(String nxContent, NxpressSchema nxSchema, String resourceName, String className) {
-    this.nxSchema = nxSchema;
-    this.resourceName = resourceName;
-    this.className = className;
+  NxpressCore.parse(String nxContent, NxpressSchema nxSchema) {
 
     // split nodes from outside brackets and remove empty ones
     final rawNodes = nxContent.trim().split((RegExp(r"(})(?![^{]*\})")));
@@ -70,7 +64,7 @@ class NxpressCore {
     return value.trim().startsWith("[") && value.trim().endsWith("]");
   }
 
-  String toDart({String customScript = ""}) {
+  String toDart(String className, String resourceName, {String customScript = ""}) {
     var injectScript = customScript != "" ? "\nimport '/src/nxres/custom/$customScript';" : "import 'package:nxpress/nxpress.dart';";
     var code = "$injectScript\nclass $className {";
 

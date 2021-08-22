@@ -10,7 +10,7 @@ main(List<String> args) async{
   var nxResCustomDir = Directory(relativePath + "/nxres/custom");
   nxResNamespacesDir.createSync(recursive: true);
   nxResCustomDir.createSync(recursive: true);
-  File(relativePath + "/nxres/custom/schemas.json").writeAsString("[]");
+  File(relativePath + "/nxres/custom/schemas.nx").writeAsString("[]");
   var nxResDir = Directory(relativePath + "/nxres/resources/strings");
   nxResDir.createSync(recursive: true);
 
