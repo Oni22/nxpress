@@ -8,7 +8,9 @@ class NxpressCore {
   NxpressCore.parse(String nxContent, NxpressSchema nxSchema) {
 
     // split nodes from outside brackets and remove empty ones
-    final rawNodes = nxContent.trim().split((RegExp(r"(})(?![^{]*\})")));
+    // TODO CHECK IF } are inside a node 
+    final rawNodes = nxContent.trim().split((RegExp(r'(})(?![^[]*\])(?![^"\n]*\")(?![^{]*\})')));
+
     rawNodes.removeWhere((node) => node.length == 0);
 
     // create nx nodes
@@ -27,7 +29,13 @@ class NxpressCore {
     List<String> usedNodeNames = [];
 
     for (final node in rawNodes) {
-      final splittedNode = node.split("{");
+      // Check if the curly brackets are correct written
+      final regexOpenCurly = RegExp(r'{(?=([^"]*"[^"]*")*[^"]*$)');
+
+      if (regexOpenCurly.allMatches(node).length > 1) throw FormatException("Node $node has invalid syntax!");
+
+      final splittedNode = node.trim().split(regexOpenCurly);
+      print(splittedNode);
       final nodeName = splittedNode[0].trim();
 
       if (usedNodeNames.contains(nodeName)) {
@@ -37,12 +45,12 @@ class NxpressCore {
       usedNodeNames.add(nodeName);
 
       final nxNode = NxpressNode(nodeName: nodeName);
-      final nodeKeyValues = splittedNode[1].split(RegExp(r"(,)(?![^[]*\])"));
+      final nodeKeyValues = splittedNode[1].trim().split(RegExp(r"(,)(?![^[]*\])"));
 
       var nxKeyValues = nodeKeyValues.map((kv) {
         final splittedkeyValue = kv.split(":");
-        final key = splittedkeyValue[0].trim().replaceAll(new RegExp(r"\s+"), "");
-        final value = splittedkeyValue[1].trim().replaceAll('"', "");
+        final key = splittedkeyValue[0].trim();
+        final value = splittedkeyValue[1].replaceAll("\"", "");
 
         if (isArrayType(value)) {
           final values = value.replaceAll("[", "").replaceAll("]", "").replaceAll("\n", "").trim().split(",");
