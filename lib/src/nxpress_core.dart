@@ -73,7 +73,7 @@ class NxpressCore {
   }
 
   String toDart(String className, String resourceName, {String customScript = ""}) {
-    var injectScript = customScript != "" ? "\nimport '/src/nxres/custom/$customScript';" : "import 'package:nxpress/nxpress.dart';";
+    var injectScript = customScript != "" ? "\nimport '/src/nxres/custom/${customScript.trim()}';" : "import 'package:nxpress/nxpress.dart';";
     var code = "$injectScript\nclass $className {";
 
     for (var node in nodes) {
