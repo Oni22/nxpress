@@ -129,8 +129,17 @@ NxString.hello_world.plural(0)
 NxString.hello_world.plural(0,placeholders: {
     "name": "Pink Lady"
 })
-
 ```
+
+## Changing Language
+
+To change the language you can call the NxConfig.lang value. Change it to the target language:
+
+```dart
+NxConfig.lang = "en"
+```
+
+The standart language is english. **IMPORTANT** the change of this value will not have an immediate effect. You need to update your UI to see the effect. For this you have multiple solutions in Flutter. For example you can use the didChangeLocales() functions from the WidgetBindingObserver. There you could change the NxConfig.lang. 
 
 ## Creating custom Nxpress Schemas
 
@@ -171,7 +180,7 @@ class MyResource extends NxpressResource {
 ```
 flutter pub run nxpress:build
 ```
-This will generate your resource folder under the **nxres/resources** directory.  Now you can add your nx resource files in this directory Furthermore you can find a dart file which updates after your generating your resources. From this file you can call your resources in your dart code lately: 
+This will generate your resource folder under the **nxres/resources** directory.  Now you can add your nx resource files in this directory. Furthermore you can find a dart file which updates after your generating your resources. From this file you can call your resources in your dart code by importing it: 
 
 ```dart
 MyResources.hello_world.myCustomFunc()
