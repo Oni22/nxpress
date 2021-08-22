@@ -23,7 +23,7 @@ class NxpressCore {
 
   // TODO validate key values format with commas
   // validate arrays syntax
-  NxNodeData validateNodeSyntax(String rawNode) {
+  NxNodeData validateNode(String rawNode) {
 
     final node = rawNode.trim();
     if(node.contains("[TT_OPAREN]") || node.contains("[TT_CPAREN]")) {
@@ -36,6 +36,8 @@ class NxpressCore {
     final hasNodeNameSpecialChars = nodeName.contains(RegExp(r'[^A-Za-z0-9_]'));
     if(hasNodeNameSpecialChars) throw FormatException("Nxpress ERROR: Only underscores are allowed in node names. At -> $nodeName"); 
 
+    final nxNode = NxpressNode(nodeName: nodeName);
+
     if(!tokenNode.endsWith("}")) throw FormatException("Nxpress ERROR: No closing brace! At -> $nodeName"); 
 
     tokenNode = tokenNode.substring(0,tokenNode.length - 1) + "[TT_CPAREN]";
@@ -46,6 +48,37 @@ class NxpressCore {
 
     if (regexOpenCurly.allMatches(nodeContent).length > 0) throw FormatException("Node $nodeName has invalid syntax!");
     if (regexCloseCurly.allMatches(nodeContent).length > 0) throw FormatException("Node $nodeName has invalid syntax!");
+
+    // TODO check , inside array values. currently will find them too! Not good because they break the parser
+    // TODO same for colons :
+    final nodeKeyValues = nodeContent.trim().split(RegExp(r""",(?=([^'"]*['"][^'"]*['"])*[^'"]*$)"""));
+    nodeKeyValues.removeWhere((kv) => kv.length == 0);
+   
+    var nxKeyValues = nodeKeyValues.map((kv) {
+      // could be break texts with :
+      var key = "";
+      var value = "";
+
+      // TODO same for colons : HERE
+      final splittedkeyValue = kv.split(":");
+      value = splittedkeyValue[1].trim();
+      key = splittedkeyValue[0].trim();
+
+      if(value.startsWith(RegExp(r"""["']""")) && (value.endsWith("\"") || value.endsWith("'"))) {
+        value = splittedkeyValue[1].replaceAll("\"", "");
+      } else {
+        throw FormatException("Nxpress ERROR: $nodeName has syntax error. \" needed!");
+      }
+
+      if (isArrayType(value)) {
+        final values = value.replaceAll("[", "").replaceAll("]", "").replaceAll("\n", "").trim().split(",");
+        return NxpressKeyValue(key: key, values: values);
+      } else {
+        return NxpressKeyValue(key: key, value: value);
+      }
+    }).toList();
+
+    nxNode.nxpressKeyValue = nxKeyValues;
 
 
     return NxNodeData(nodeName: nodeName,nodeContent: nodeContent);
@@ -58,7 +91,7 @@ class NxpressCore {
 
     for (final node in rawNodes) {
 
-      final nodeData = validateNodeSyntax(node);
+      final nodeData = validateNode(node);
 
       if (usedNodeNames.contains(nodeData.nodeName)) {
         throw FormatException("Duplicated node name: ${nodeData.nodeName}");
